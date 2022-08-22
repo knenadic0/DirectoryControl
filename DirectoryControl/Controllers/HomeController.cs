@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DirectoryControl.Service;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,23 +9,17 @@ namespace DirectoryControl.Controllers
 {
     public class HomeController : Controller
     {
+        private DirectoryService service;
+
+        public HomeController()
+        {
+            service = new DirectoryService();
+        }
+
         public ActionResult Index()
         {
-            return View();
-        }
-
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            var directories = service.GetRootDirectories();
+            return View(directories);
         }
     }
 }
