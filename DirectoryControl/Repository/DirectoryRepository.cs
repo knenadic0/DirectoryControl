@@ -23,7 +23,7 @@ namespace DirectoryControl.Repository
 
         public Directory GetDirectory(int id)
         {
-            return context.Directory.Find(id);
+            return context.Directory.Include(x => x.Directories).SingleOrDefault(x => x.Id == id);
         }
 
         public void InsertDirectory(Directory directory)

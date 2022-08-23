@@ -17,10 +17,23 @@ namespace DirectoryControl.Controllers
             service = new DirectoryService();
         }
 
-        public ActionResult Index()
+        public ActionResult Index(int? id)
         {
-            var directories = service.GetRootDirectories();
-            return View(directories);
+            Directory directory;
+            if (id.HasValue)
+            {
+                directory = service.GetDirectory(id.Value);
+            }
+            else
+            {
+                directory = new Directory()
+                {
+                    Name = "Root",
+                    Directories = service.GetDirectories().ToList()
+                };
+            }
+
+            return View(directory);
         }
 
         public ActionResult AddNew(string name, int? parent)
@@ -37,7 +50,7 @@ namespace DirectoryControl.Controllers
             };
             service.InsertDirectory(directory);
 
-            if (parent == null)
+            if (!parent.HasValue)
             {
 
             }

@@ -16,19 +16,16 @@ namespace DirectoryControl.Service
             repository = new DirectoryRepository(new dbEntities());
         }
 
-        public IEnumerable<Directory> GetDirectories()
+        public IEnumerable<Directory> GetDirectories(int? id = null)
         {
-            return repository.GetDirectories();
-        }
-
-        public IEnumerable<Directory> GetRootDirectories()
-        {
-            return repository.GetDirectories().Where(x => !x.Parent.HasValue).OrderBy(x => x.Name);
-        }
-
-        public IEnumerable<Directory> GetDirectories(int id)
-        {
-            return repository.GetDirectories().Where(x => x.Parent == id).OrderBy(x => x.Name);
+            if (id.HasValue)
+            {
+                return repository.GetDirectories().Where(x => x.Parent == id).OrderBy(x => x.Name);
+            }
+            else
+            {
+                return repository.GetDirectories().Where(x => !x.Parent.HasValue).OrderBy(x => x.Name);
+            }
         }
 
         public Directory GetDirectory(int id)
