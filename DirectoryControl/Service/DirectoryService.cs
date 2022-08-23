@@ -23,7 +23,12 @@ namespace DirectoryControl.Service
 
         public IEnumerable<Directory> GetRootDirectories()
         {
-            return repository.GetDirectories().Where(x => !x.Parent.HasValue);
+            return repository.GetDirectories().Where(x => !x.Parent.HasValue).OrderBy(x => x.Name);
+        }
+
+        public IEnumerable<Directory> GetDirectories(int id)
+        {
+            return repository.GetDirectories().Where(x => x.Parent == id).OrderBy(x => x.Name);
         }
 
         public Directory GetDirectory(int id)

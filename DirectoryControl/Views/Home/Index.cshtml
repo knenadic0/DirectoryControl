@@ -2,15 +2,26 @@
     ViewBag.Title = "Disk";
 }
 
+<h1 class="mb-3">Disk</h1>
 <div class="row">
-    <h1 class="mb-3">Disk</h1>
     <div class="container-fluid d-flex">
         @foreach (var directory in Model)
         {
             <div class="panel panel-default mr-3">
-                <div class="panel-body"><img src="~/media/images/folder.png"/></div>
+                <div class="panel-body"><img src="~/media/images/folder.png" /></div>
                 <div class="panel-footer text-center">@directory.Name</div>
             </div>
         }
     </div>
+</div>
+<div class="row container-fluid">
+    @using (Html.BeginForm("AddNew", "Home", FormMethod.Post))
+    {
+        <div class="input-group">
+            <span class="input-group-addon">Naziv foldera</span>
+            <input id="name" type="text" class="form-control" name="name" required>
+            <input id="parent" type="hidden" value="null" name="parent">
+            <button class="btn btn-primary ml-3">Dodaj folder</button>
+        </div>
+    }
 </div>

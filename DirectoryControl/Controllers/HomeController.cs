@@ -1,4 +1,5 @@
-﻿using DirectoryControl.Service;
+﻿using DirectoryControl.Models;
+using DirectoryControl.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,27 @@ namespace DirectoryControl.Controllers
         {
             var directories = service.GetRootDirectories();
             return View(directories);
+        }
+
+        public ActionResult AddNew(string name, int? parent)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return RedirectToAction("Index");
+            }
+
+            var directory = new Directory
+            {
+                Name = name,
+                Parent = parent
+            };
+            service.InsertDirectory(directory);
+
+            if (parent == null)
+            {
+
+            }
+                return RedirectToAction("Index");
         }
     }
 }
