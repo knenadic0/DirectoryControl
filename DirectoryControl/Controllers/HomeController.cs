@@ -38,6 +38,7 @@ namespace DirectoryControl.Controllers
             return View(directory);
         }
 
+        [HttpPost]
         public ActionResult AddNew(string name, int? parent)
         {
             if (string.IsNullOrEmpty(name))
@@ -53,6 +54,24 @@ namespace DirectoryControl.Controllers
             service.InsertDirectory(directory);
 
             return RedirectToAction("Folder", new { id = parent.ToNull() });
+        }
+
+        [HttpPost]
+        public ActionResult Rename(int id, string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return RedirectToAction("Folder");
+            }
+
+            var directory = service.GetDirectory(id);
+            if (directory != null)
+            {
+                directory.Name = name;
+                service.UpdateDirectory(directory);
+            }
+
+            return RedirectToAction("Folder", new { id });
         }
     }
 }

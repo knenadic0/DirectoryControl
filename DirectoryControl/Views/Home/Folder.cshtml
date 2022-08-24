@@ -27,3 +27,18 @@
         </div>
     }
 </div>
+
+@if (Model.Id != 0)
+{
+    <div class="row container-fluid mb-3">
+        @using (Html.BeginForm("Rename", "Home", FormMethod.Post))
+        {
+            <div class="input-group">
+                <span class="input-group-addon">Novi naziv foldera</span>
+                <input id="name" type="text" class="form-control" name="name" required>
+                <input id="id" type="hidden" value="@Model.Id" name="id">
+                <button class="btn btn-primary ml-3">Preimenuj @Model.Name folder</button>
+            </div>
+        }
+    </div>
+}
