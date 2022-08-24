@@ -1,4 +1,5 @@
-﻿using DirectoryControl.Models;
+﻿using DirectoryControl.Common;
+using DirectoryControl.Models;
 using DirectoryControl.Service;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace DirectoryControl.Controllers
             service = new DirectoryService();
         }
 
-        public ActionResult Index(int? id)
+        public ActionResult Folder(int? id = null)
         {
             Directory directory;
             if (id.HasValue)
@@ -29,6 +30,7 @@ namespace DirectoryControl.Controllers
                 directory = new Directory()
                 {
                     Name = "Root",
+                    Id = 0,
                     Directories = service.GetDirectories().ToList()
                 };
             }
@@ -40,21 +42,17 @@ namespace DirectoryControl.Controllers
         {
             if (string.IsNullOrEmpty(name))
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Folder");
             }
 
             var directory = new Directory
             {
                 Name = name,
-                Parent = parent
+                Parent = parent.ToNull()
             };
             service.InsertDirectory(directory);
 
-            if (!parent.HasValue)
-            {
-
-            }
-                return RedirectToAction("Index");
+            return RedirectToAction("Folder", new { id = parent.ToNull() });
         }
     }
 }
