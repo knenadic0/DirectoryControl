@@ -18,6 +18,7 @@ namespace DirectoryControl.Controllers
             service = new DirectoryService();
         }
 
+        [HttpGet]
         public ActionResult Folder(int? id = null)
         {
             Directory directory;
@@ -34,6 +35,19 @@ namespace DirectoryControl.Controllers
                     Directories = service.GetDirectories().ToList()
                 };
             }
+
+            return View(directory);
+        }
+
+        [HttpGet]
+        public ActionResult Structure()
+        {
+            var directory = new Directory()
+            {
+                Name = "Root",
+                Id = 0,
+                Directories = service.GetDirectories().ToList()
+            };
 
             return View(directory);
         }
@@ -72,6 +86,18 @@ namespace DirectoryControl.Controllers
             }
 
             return RedirectToAction("Folder", new { id });
+        }
+
+        [HttpPost]
+        public ActionResult Delete(int id)
+        {
+            var directory = service.GetDirectory(id);
+            if (directory != null)
+            {
+                service.DeleteDirectory(id);
+            }
+
+            return RedirectToAction("Folder");
         }
     }
 }

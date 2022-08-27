@@ -1,4 +1,5 @@
-﻿using DirectoryControl.Models;
+﻿using DirectoryControl.Common;
+using DirectoryControl.Models;
 using DirectoryControl.Repository;
 using System;
 using System.Collections.Generic;
@@ -16,16 +17,9 @@ namespace DirectoryControl.Service
             repository = new DirectoryRepository(new dbEntities());
         }
 
-        public IEnumerable<Directory> GetDirectories(int? id = null)
+        public IEnumerable<Directory> GetDirectories()
         {
-            if (id.HasValue)
-            {
-                return repository.GetDirectories().Where(x => x.Parent == id).OrderBy(x => x.Name);
-            }
-            else
-            {
-                return repository.GetDirectories().Where(x => !x.Parent.HasValue).OrderBy(x => x.Name);
-            }
+            return repository.GetDirectories().Where(x => !x.Parent.HasValue).OrderBy(x => x.Name);
         }
 
         public Directory GetDirectory(int id)
@@ -41,7 +35,14 @@ namespace DirectoryControl.Service
 
         public void DeleteDirectory(int directoryId)
         {
-            repository.DeleteDirectory(directoryId);
+            var directory = repository.GetDirectory(directoryId);
+
+            foreach (var subfolder in Helper.Collect(directory.Directories.ToList()))
+            {
+                repository.DeleteDirectory(subfolder);
+            }
+            repository.DeleteDirectory(directory);
+
             repository.Save();
         }
 

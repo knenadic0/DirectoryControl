@@ -37,8 +37,29 @@
                 <span class="input-group-addon">Novi naziv foldera</span>
                 <input id="name" type="text" class="form-control" name="name" required>
                 <input id="id" type="hidden" value="@Model.Id" name="id">
-                <button class="btn btn-primary ml-3">Preimenuj @Model.Name folder</button>
+                <button class="btn btn-warning ml-3">Preimenuj @Model.Name folder</button>
             </div>
         }
     </div>
+    <div class="row container-fluid mb-3">
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Obriši @Model.Name folder</button>
+    </div>
 }
+
+<div id="deleteModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Obrisati folder @Model.Name i sve njegove podfoldere?</p>
+            </div>
+            <div class="modal-footer">
+                @using (Html.BeginForm("Delete", "Home", FormMethod.Post))
+                {
+                    <input id="id" type="hidden" value="@Model.Id" name="id">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Odustani</button>
+                    <button type="submit" class="btn btn-danger">Obriši</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>

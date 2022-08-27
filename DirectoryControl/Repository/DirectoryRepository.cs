@@ -37,6 +37,11 @@ namespace DirectoryControl.Repository
             context.Directory.Remove(directory);
         }
 
+        public void DeleteDirectory(Directory directory)
+        {
+            context.Directory.Remove(directory);
+        }
+
         public void UpdateDirectory(Directory directory)
         {
             context.Entry(directory).State = EntityState.Modified;
