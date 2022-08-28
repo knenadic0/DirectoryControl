@@ -28,12 +28,17 @@ namespace DirectoryControl.Controllers
             }
             else
             {
-                directory = new Directory()
+                directory = service.GetRootFolder();
+            }
+
+            if (directory == null)
+            {
+                var errorModel = new ErrorModel()
                 {
-                    Name = "Root",
-                    Id = 0,
-                    Directories = service.GetDirectories().ToList()
+                    Code = 404,
+                    Message = "Folder not found"
                 };
+                return View("Error", errorModel);
             }
 
             return View(directory);
@@ -57,7 +62,12 @@ namespace DirectoryControl.Controllers
         {
             if (string.IsNullOrEmpty(name))
             {
-                return RedirectToAction("Folder");
+                var errorModel = new ErrorModel()
+                {
+                    Code = 400,
+                    Message = "Bad request - name cannot be empty"
+                };
+                return View("Error", errorModel);
             }
 
             var directory = new Directory
@@ -65,7 +75,20 @@ namespace DirectoryControl.Controllers
                 Name = name,
                 Parent = parent.ToNull()
             };
-            service.InsertDirectory(directory);
+
+            try
+            {
+                service.InsertDirectory(directory);
+            }
+            catch (Exception)
+            {
+                var errorModel = new ErrorModel()
+                {
+                    Code = 400,
+                    Message = "Bad request - directory with same name already exists in this folder"
+                };
+                return View("Error", errorModel);
+            }
 
             return RedirectToAction("Folder", new { id = parent.ToNull() });
         }
@@ -75,14 +98,31 @@ namespace DirectoryControl.Controllers
         {
             if (string.IsNullOrEmpty(name))
             {
-                return RedirectToAction("Folder");
+                var errorModel = new ErrorModel()
+                {
+                    Code = 400,
+                    Message = "Bad request - name cannot be empty"
+                };
+                return View("Error", errorModel);
             }
 
             var directory = service.GetDirectory(id);
             if (directory != null)
             {
-                directory.Name = name;
-                service.UpdateDirectory(directory);
+                try
+                {
+                    directory.Name = name;
+                    service.UpdateDirectory(directory);
+                }
+                catch (Exception)
+                {
+                    var errorModel = new ErrorModel()
+                    {
+                        Code = 400,
+                        Message = "Bad request - directory with same name already exists in parent folder"
+                    };
+                    return View("Error", errorModel);
+                }
             }
 
             return RedirectToAction("Folder", new { id });
@@ -94,10 +134,19 @@ namespace DirectoryControl.Controllers
             var directory = service.GetDirectory(id);
             if (directory != null)
             {
+                int? parentId = directory.Parent;
                 service.DeleteDirectory(id);
+                return RedirectToAction("Folder", new { Id = parentId });
             }
-
-            return RedirectToAction("Folder");
+            else
+            {
+                var errorModel = new ErrorModel()
+                {
+                    Code = 400,
+                    Message = $"Bad request - directory with {id} does not exist"
+                };
+                return View("Error", errorModel);
+            }
         }
     }
 }

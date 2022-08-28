@@ -27,6 +27,16 @@ namespace DirectoryControl.Service
             return repository.GetDirectory(id);
         }
 
+        public Directory GetRootFolder()
+        {
+            return new Directory()
+            {
+                Name = "Root",
+                Id = 0,
+                Directories = GetDirectories().ToList()
+            };
+        }
+
         public void InsertDirectory(Directory directory)
         {
             repository.InsertDirectory(directory);
