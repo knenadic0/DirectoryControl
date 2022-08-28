@@ -7,7 +7,7 @@ namespace DirectoryControl.Common
 {
     public static class Extensions
     {
-        public static int? ToNull(this int? id)
+        public static int? ToValueOrNull(this int? id)
         {
             return id != 0 ? id : null;
         }

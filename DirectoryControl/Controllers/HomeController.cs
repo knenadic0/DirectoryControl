@@ -21,15 +21,7 @@ namespace DirectoryControl.Controllers
         [HttpGet]
         public ActionResult Folder(int? id = null)
         {
-            Directory directory;
-            if (id.HasValue)
-            {
-                directory = service.GetDirectory(id.Value);
-            }
-            else
-            {
-                directory = service.GetRootFolder();
-            }
+            var directory = service.GetDirectory(id);
 
             if (directory == null)
             {
@@ -47,12 +39,7 @@ namespace DirectoryControl.Controllers
         [HttpGet]
         public ActionResult Structure()
         {
-            var directory = new Directory()
-            {
-                Name = "Root",
-                Id = 0,
-                Directories = service.GetDirectories().ToList()
-            };
+            var directory = service.GetDirectory();
 
             return View(directory);
         }
@@ -73,7 +60,7 @@ namespace DirectoryControl.Controllers
             var directory = new Directory
             {
                 Name = name,
-                Parent = parent.ToNull()
+                Parent = parent.ToValueOrNull()
             };
 
             try
@@ -90,7 +77,7 @@ namespace DirectoryControl.Controllers
                 return View("Error", errorModel);
             }
 
-            return RedirectToAction("Folder", new { id = parent.ToNull() });
+            return RedirectToAction("Folder", new { id = parent.ToValueOrNull() });
         }
 
         [HttpPost]
@@ -143,7 +130,7 @@ namespace DirectoryControl.Controllers
                 var errorModel = new ErrorModel()
                 {
                     Code = 400,
-                    Message = $"Bad request - directory with {id} does not exist"
+                    Message = $"Bad request - directory with id {id} does not exist"
                 };
                 return View("Error", errorModel);
             }
